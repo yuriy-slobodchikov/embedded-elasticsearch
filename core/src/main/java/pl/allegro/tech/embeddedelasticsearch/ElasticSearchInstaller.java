@@ -31,6 +31,16 @@ class ElasticSearchInstaller {
     private static final String ELS_PACKAGE_PREFIX = "elasticsearch-";
     private static final List<String> ELS_EXECUTABLE_FILES = Arrays.asList("elasticsearch", "elasticsearch.in.sh");
 
+    private static final String XPACK_ML_EXECUTABLE_PREFIX = "modules/x-pack/x-pack-ml/platform/linux-x86_64/bin";
+
+    private static final List<String> XPACK_ML_EXECUTABLE_FILES = Arrays.asList(
+            "autoconfig",
+            "autodetect",
+            "categorize",
+            "controller",
+            "normalize"
+            );
+
     private final InstanceSettings instanceSettings;
     private final InstallationDescription installationDescription;
     private final ElasticDownloader elasticDownloader;
@@ -158,6 +168,14 @@ class ElasticSearchInstaller {
         File binDirectory = getFile(getInstallationDirectory(), "bin");
         for (String fn : ELS_EXECUTABLE_FILES) {
             setExecutable(new File(binDirectory, fn));
+        }
+
+        File binXpackMlDirectory = getFile(getInstallationDirectory(), XPACK_ML_EXECUTABLE_PREFIX);
+        if (binXpackMlDirectory.exists()) {
+            logger.info("Applying executable permissions on files in " + binXpackMlDirectory);
+            for (String xpackMlFile : XPACK_ML_EXECUTABLE_FILES) {
+                setExecutable(new File(binXpackMlDirectory, xpackMlFile));
+            }
         }
     }
 
